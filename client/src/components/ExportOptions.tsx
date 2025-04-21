@@ -283,12 +283,12 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                   <Label htmlFor="add-watermark" className="flex-1">
                     <div className="font-medium flex items-center gap-2">
                       <BadgeCheck className="h-4 w-4 text-primary" />
-                      <span>Made with Urdu AI</span>
+                      <span>Built by UrduAI</span>
                       <div className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary text-white">
                         Required
                       </div>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">All exports include "Made with Urdu AI Tracker" watermark</p>
+                    <p className="text-xs text-gray-500 mt-1">All exports include "Built by www.urduai.org" watermark</p>
                   </Label>
                 </div>
                 
@@ -468,7 +468,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                         <FileImage className="h-10 w-10 mb-2" />
                         <div className="text-xs text-center">
                           <span className="font-medium">{brandSettings?.name || "Your Name"}</span>
-                          <div className="text-gray-500 text-[10px] mt-0.5">Made with Urdu AI Tracker</div>
+                          <div className="text-gray-500 text-[10px] mt-0.5">Built by www.urduai.org</div>
                         </div>
                       </div>
                     </div>
@@ -484,7 +484,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                 <div className="text-sm p-3 bg-blue-50 text-blue-800 rounded-lg max-w-md">
                   <div className="flex items-start">
                     <CheckCircle2 className="h-5 w-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0" />
-                    <p>Your media kit will be exported with <span className="font-medium">Urdu AI Tracker</span> branding to showcase the professional source of your analytics</p>
+                    <p>Your media kit will be exported with <span className="font-medium">www.urduai.org</span> branding. No data is stored - once refreshed/closed, all data is gone.</p>
                   </div>
                 </div>
                 

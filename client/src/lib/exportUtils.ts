@@ -44,13 +44,13 @@ export const exportToPDF = async (
         title: `Media Kit - ${brandSettings.name || "Content Creator"}`,
         subject: "Social Media Analytics",
         author: brandSettings.name || "Content Creator",
-        creator: "SocialKit Media Kit Creator",
+        creator: "Made with Urdu AI Tracker (www.urduai.org)",
       });
     }
 
     // Add watermark if needed
     if (exportOptions.addWatermark) {
-      const watermarkText = "Created with SocialKit";
+      const watermarkText = "Built by www.urduai.org";
       pdf.setFontSize(10);
       pdf.setTextColor(200, 200, 200);
       pdf.text(watermarkText, 105, 290, { align: "center" });
