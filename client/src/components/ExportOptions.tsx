@@ -7,12 +7,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { 
   Download, Eye, FileImage, File, Code, 
   Bookmark, Calendar, TrendingUp, DatabaseIcon, 
-  Image, CheckCircle2, BadgeCheck
+  Image, CheckCircle2, BadgeCheck, Users, BarChart, Globe,
+  Zap, LineChart, Radio, PieChart
 } from "lucide-react";
 import { useBrand } from "@/contexts/BrandContext";
 import { useToast } from "@/hooks/use-toast";
 import { exportData, downloadDataUrl, generateFilename } from "@/lib/exportUtils";
-import { ExportFormat, TemplateStyle } from "@/types";
+import { ExportFormat, TemplateStyle, MetricType } from "@/types";
 
 interface ExportOptionsProps {
   className?: string;
@@ -250,19 +251,22 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                   </Label>
                 </div>
                 
-                <div className="flex items-center space-x-3 p-3 border border-primary/30 rounded-lg bg-primary/5 hover:bg-primary/10 cursor-pointer transition-colors">
+                <div className="flex items-center space-x-3 p-3 border border-primary/30 rounded-lg bg-primary/5 hover:bg-primary/10 cursor-not-allowed transition-colors">
                   <Checkbox 
                     id="add-watermark" 
-                    checked={true}
-                    onCheckedChange={(checked) => handleOptionChange('addWatermark', true)}
+                    checked={exportOptions.addWatermark}
+                    disabled={true}
                     className="data-[state=checked]:bg-primary data-[state=checked]:text-white"
                   />
-                  <Label htmlFor="add-watermark" className="flex-1 cursor-pointer">
+                  <Label htmlFor="add-watermark" className="flex-1">
                     <div className="font-medium flex items-center gap-2">
                       <BadgeCheck className="h-4 w-4 text-primary" />
                       <span>Made with Urdu AI</span>
+                      <div className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary text-white">
+                        Required
+                      </div>
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">Add "Made with Urdu AI Tracker" watermark</p>
+                    <p className="text-xs text-gray-500 mt-1">All exports include "Made with Urdu AI Tracker" watermark</p>
                   </Label>
                 </div>
                 
