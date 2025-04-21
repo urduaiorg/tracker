@@ -30,7 +30,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
               <path d="m19 9-5 5-4-4-3 3"></path>
             </svg>
           </div>
-          <span className="font-heading font-semibold text-xl">SocialKit</span>
+          <span className="font-heading font-semibold text-xl">Urdu AI Tracker</span>
         </div>
         
         <div className="lg:mt-12 flex lg:flex-col lg:w-full gap-2">

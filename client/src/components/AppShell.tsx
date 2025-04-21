@@ -22,8 +22,8 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
-              <h1 className="text-2xl md:text-3xl font-heading font-bold">Media Kit Creator</h1>
-              <p className="text-gray-600 mt-1">Transform your analytics into stunning shareable assets</p>
+              <h1 className="text-2xl md:text-3xl font-heading font-bold">Urdu AI Tracker</h1>
+              <p className="text-gray-600 mt-1">Transform your analytics into stunning modern report cards</p>
             </div>
             
             <div className="flex items-center gap-3">

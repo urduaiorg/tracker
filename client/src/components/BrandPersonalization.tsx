@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { useBrand } from "@/contexts/BrandContext";
 import { Button } from "@/components/ui/button";
-import { Avatar } from "@/components/ui/avatar";
-import { Edit, User } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Edit, User, Camera, Trash2, Upload } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { BrandSettings } from "@/types";
+import { fileToBase64 } from "@/lib/fileUtils";
+import { useToast } from "@/hooks/use-toast";
 
 interface BrandPersonalizationProps {
   className?: string;
@@ -14,12 +17,49 @@ interface BrandPersonalizationProps {
 
 export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ className }) => {
   const { brandSettings, updateBrandSettings } = useBrand();
+  const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Partial<BrandSettings>>(brandSettings || {});
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleLogoUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Check file size (limit to 1MB)
+    if (file.size > 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please select an image under 1MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Convert file to base64
+      const base64 = await fileToBase64(file);
+      setFormData((prev) => ({
+        ...prev,
+        logo: base64,
+      }));
+      toast({
+        title: "Logo uploaded",
+        description: "Your logo has been uploaded successfully",
+      });
+    } catch (error) {
+      console.error("Error uploading logo:", error);
+      toast({
+        title: "Error",
+        description: "Failed to upload logo. Please try again.",
+        variant: "destructive",
+      });
+    }
+  }, [toast]);
 
   if (!brandSettings) return null;
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -28,8 +68,17 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
     try {
       await updateBrandSettings(formData);
       setIsEditing(false);
+      toast({
+        title: "Success",
+        description: "Your brand settings have been updated.",
+      });
     } catch (error) {
       console.error("Error saving brand settings:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update settings. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -40,17 +89,60 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
     });
   };
 
+  const removeLogo = () => {
+    setFormData({
+      ...formData,
+      logo: "",
+    });
+  };
+
+  const triggerFileUpload = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
-    <div className={`bg-white rounded-lg shadow-sm border border-gray-100 p-4 ${className}`}>
+    <div className={`bg-white rounded-lg shadow-sm border border-gray-100 p-6 ${className}`}>
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <div className="flex items-center gap-3">
-          <Avatar className="w-12 h-12">
-            {brandSettings.logo ? (
-              <img src={brandSettings.logo} alt={brandSettings.name || "Profile"} />
-            ) : (
-              <User className="w-6 h-6 text-gray-400" />
+        <div className="flex items-center gap-4">
+          <div className="relative group">
+            <Avatar className="w-16 h-16 border-2 border-primary/20">
+              <AvatarImage src={formData.logo || brandSettings.logo || undefined} alt={brandSettings.name || "Profile"} />
+              <AvatarFallback className="bg-primary/5">
+                <User className="w-8 h-8 text-primary/40" />
+              </AvatarFallback>
+            </Avatar>
+            
+            {isEditing && (
+              <div className="absolute inset-0 bg-black/30 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex gap-1">
+                  <button 
+                    onClick={triggerFileUpload}
+                    className="p-1 bg-white rounded-full"
+                    title="Upload logo"
+                  >
+                    <Camera className="w-4 h-4 text-primary" />
+                  </button>
+                  {formData.logo && (
+                    <button 
+                      onClick={removeLogo}
+                      className="p-1 bg-white rounded-full"
+                      title="Remove logo"
+                    >
+                      <Trash2 className="w-4 h-4 text-red-500" />
+                    </button>
+                  )}
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleLogoUpload}
+                />
+              </div>
             )}
-          </Avatar>
+          </div>
+          
           <div>
             {isEditing ? (
               <div className="flex flex-col gap-2">
@@ -67,6 +159,13 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
                   value={formData.handle || ""}
                   onChange={handleInputChange}
                   placeholder="@handle"
+                />
+                <Textarea
+                  className="text-sm min-h-[60px]"
+                  name="bio"
+                  value={formData.bio || ""}
+                  onChange={handleInputChange}
+                  placeholder="Brief bio"
                 />
               </div>
             ) : (
@@ -87,8 +186,8 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
               <Button variant="outline" size="sm" onClick={() => setIsEditing(false)}>
                 Cancel
               </Button>
-              <Button size="sm" onClick={handleSave}>
-                Save
+              <Button size="sm" onClick={handleSave} className="bg-primary hover:bg-primary/90">
+                Save Changes
               </Button>
             </div>
           ) : (
@@ -99,8 +198,8 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
                   <Popover>
                     <PopoverTrigger asChild>
                       <button
-                        className="w-6 h-6 rounded-full border border-white shadow-sm"
-                        style={{ backgroundColor: brandSettings.primaryColor }}
+                        className="w-7 h-7 rounded-full border border-white shadow-sm transition-transform hover:scale-110"
+                        style={{ backgroundColor: brandSettings.primaryColor || "#3B82F6" }}
                       />
                     </PopoverTrigger>
                     <PopoverContent className="w-64 p-3">
@@ -113,7 +212,7 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
                           ].map((color) => (
                             <button
                               key={color}
-                              className="w-8 h-8 rounded-full border border-white shadow-sm"
+                              className="w-8 h-8 rounded-full border border-white shadow-sm transition-transform hover:scale-110"
                               style={{ backgroundColor: color }}
                               onClick={() => handleColorClick("primaryColor", color)}
                             />
@@ -132,8 +231,8 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
                   <Popover>
                     <PopoverTrigger asChild>
                       <button
-                        className="w-6 h-6 rounded-full border border-white shadow-sm"
-                        style={{ backgroundColor: brandSettings.secondaryColor }}
+                        className="w-7 h-7 rounded-full border border-white shadow-sm transition-transform hover:scale-110"
+                        style={{ backgroundColor: brandSettings.secondaryColor || "#10B981" }}
                       />
                     </PopoverTrigger>
                     <PopoverContent className="w-64 p-3">
@@ -146,7 +245,7 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
                           ].map((color) => (
                             <button
                               key={color}
-                              className="w-8 h-8 rounded-full border border-white shadow-sm"
+                              className="w-8 h-8 rounded-full border border-white shadow-sm transition-transform hover:scale-110"
                               style={{ backgroundColor: color }}
                               onClick={() => handleColorClick("secondaryColor", color)}
                             />
@@ -165,10 +264,9 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
                   <Popover>
                     <PopoverTrigger asChild>
                       <button
-                        className="w-6 h-6 rounded-full bg-gray-200 border border-white shadow-sm flex items-center justify-center text-gray-500"
-                      >
-                        <span className="text-xs">+</span>
-                      </button>
+                        className="w-7 h-7 rounded-full border border-white shadow-sm transition-transform hover:scale-110"
+                        style={{ backgroundColor: (brandSettings.accentColor || "#F59E0B") as string }}
+                      />
                     </PopoverTrigger>
                     <PopoverContent className="w-64 p-3">
                       <div className="space-y-2">
@@ -180,7 +278,7 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
                           ].map((color) => (
                             <button
                               key={color}
-                              className="w-8 h-8 rounded-full border border-white shadow-sm"
+                              className="w-8 h-8 rounded-full border border-white shadow-sm transition-transform hover:scale-110"
                               style={{ backgroundColor: color }}
                               onClick={() => handleColorClick("accentColor", color)}
                             />
@@ -203,9 +301,9 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsEditing(true)}
-                className="text-primary text-sm font-medium flex items-center gap-1"
+                className="text-primary text-sm font-medium flex items-center gap-1 hover:bg-primary/5"
               >
-                <Edit className="h-4 w-4" /> Customize
+                <Edit className="h-4 w-4" /> Customize Profile
               </Button>
             </>
           )}
