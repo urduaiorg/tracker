@@ -20,7 +20,9 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
   const { brandSettings, updateBrandSettings } = useBrand();
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<Partial<BrandSettings>>(brandSettings || {});
+  const [formData, setFormData] = useState<Partial<BrandSettings & { backgroundOpacity?: number }>>(
+    brandSettings ? { ...brandSettings, backgroundOpacity: brandSettings.backgroundOpacity || 30 } : {}
+  );
   const logoInputRef = useRef<HTMLInputElement>(null);
   const bgImageInputRef = useRef<HTMLInputElement>(null);
 
@@ -73,7 +75,12 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    // Handle numeric inputs like background opacity
+    if (name === "backgroundOpacity") {
+      setFormData({ ...formData, [name]: parseInt(value, 10) });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleSave = async () => {
@@ -125,7 +132,8 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
 
   return (
     <div className={`bg-white rounded-lg shadow-sm border border-gray-100 p-6 ${className}`}>
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      {/* Profile Section */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
         <div className="flex items-center gap-4">
           <div className="relative group">
             <Avatar className="w-16 h-16 border-2 border-primary/20">
@@ -139,7 +147,7 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
               <div className="absolute inset-0 bg-black/30 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                 <div className="flex gap-1">
                   <button 
-                    onClick={triggerFileUpload}
+                    onClick={triggerLogoUpload}
                     className="p-1 bg-white rounded-full"
                     title="Upload logo"
                   >
@@ -156,7 +164,7 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
                   )}
                 </div>
                 <input
-                  ref={fileInputRef}
+                  ref={logoInputRef}
                   type="file"
                   accept="image/*"
                   className="hidden"
@@ -332,6 +340,121 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
           )}
         </div>
       </div>
+      
+      {/* Background Image Section */}
+      {isEditing && (
+        <div className="mt-6 border-t pt-6">
+          <h4 className="font-medium mb-4 flex items-center gap-2">
+            <ImageIcon className="h-4 w-4 text-primary" />
+            Dashboard Background
+          </h4>
+          
+          <Tabs defaultValue="upload" className="w-full">
+            <TabsList className="mb-4">
+              <TabsTrigger value="upload">Upload Image</TabsTrigger>
+              <TabsTrigger value="preview">Preview</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="upload" className="space-y-4">
+              <div className="border-2 border-dashed border-gray-200 rounded-lg p-4 text-center">
+                {formData.backgroundImage ? (
+                  <div className="relative">
+                    <img 
+                      src={formData.backgroundImage} 
+                      alt="Background preview" 
+                      className="max-h-48 mx-auto rounded object-cover"
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={removeBackgroundImage}
+                      className="mt-2 text-red-500 border-red-200"
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" /> Remove Background
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="py-8">
+                    <ImageIcon className="h-12 w-12 mx-auto text-gray-300 mb-3" />
+                    <p className="text-gray-500 mb-3">Upload a background image for your dashboard</p>
+                    <Button 
+                      variant="outline" 
+                      onClick={triggerBgImageUpload}
+                      className="border-primary/20 text-primary"
+                    >
+                      <Upload className="h-4 w-4 mr-2" /> Select Image
+                    </Button>
+                    <input
+                      ref={bgImageInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleBackgroundUpload}
+                    />
+                  </div>
+                )}
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <Label className="mb-2 block">Background Opacity</Label>
+                  <Input
+                    type="range"
+                    name="backgroundOpacity"
+                    min="10"
+                    max="100"
+                    step="5"
+                    value={formData.backgroundOpacity || 30}
+                    onChange={handleInputChange}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>Transparent</span>
+                    <span>Opaque</span>
+                  </div>
+                </div>
+                
+                <p className="text-xs text-gray-500">
+                  Set a lower opacity to ensure dashboard content remains readable
+                </p>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="preview">
+              <div className="border rounded-lg overflow-hidden h-60 relative">
+                {formData.backgroundImage ? (
+                  <>
+                    <div 
+                      className="absolute inset-0 bg-no-repeat bg-cover" 
+                      style={{
+                        backgroundImage: `url(${formData.backgroundImage})`,
+                        opacity: (formData.backgroundOpacity || 30) / 100,
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-white/70"></div>
+                    <div className="relative z-10 p-4">
+                      <h3 className="text-lg font-medium">Dashboard Preview</h3>
+                      <p className="text-gray-600">This shows how your background will look behind dashboard elements</p>
+                      <div className="flex flex-wrap gap-3 mt-4">
+                        <div className="bg-white p-3 rounded-lg shadow-sm w-32 h-24 flex items-center justify-center">
+                          Sample Widget
+                        </div>
+                        <div className="bg-white p-3 rounded-lg shadow-sm w-32 h-24 flex items-center justify-center">
+                          Sample Widget
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="h-full flex items-center justify-center text-gray-400">
+                    <p>Upload a background image to see preview</p>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      )}
     </div>
   );
 };
