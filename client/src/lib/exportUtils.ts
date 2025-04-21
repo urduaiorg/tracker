@@ -69,7 +69,8 @@ export const exportToPDF = async (
  */
 export const exportToJPEG = async (
   elementId: string,
-  quality = 0.95
+  quality = 0.95,
+  exportOptions?: ExportOptions
 ): Promise<string> => {
   try {
     const element = document.getElementById(elementId);
@@ -84,6 +85,17 @@ export const exportToJPEG = async (
       allowTaint: true,
       backgroundColor: "#ffffff",
     });
+    
+    // Add watermark if needed
+    if (exportOptions?.addWatermark) {
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.font = '12px Arial';
+        ctx.fillStyle = 'rgba(200, 200, 200, 0.7)';
+        ctx.textAlign = 'center';
+        ctx.fillText('Built by www.urduai.org', canvas.width / 2, canvas.height - 20);
+      }
+    }
 
     // Return as data URL
     return canvas.toDataURL("image/jpeg", quality);
@@ -105,7 +117,7 @@ export const exportData = async (
     case "pdf":
       return exportToPDF(elementId, exportOptions, brandSettings);
     case "jpeg":
-      return exportToJPEG(elementId);
+      return exportToJPEG(elementId, 0.95, exportOptions);
     case "html":
       // For HTML export, we'd need to create a standalone HTML file
       // This is a placeholder implementation

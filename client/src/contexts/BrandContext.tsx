@@ -33,7 +33,7 @@ const defaultExportOptions: ExportOptions = {
   template: "modern",
   includeQrCodes: true,
   includeGrowthTrends: true,
-  addWatermark: true, // Always include "Made with Urdu AI Tracker" watermark
+  addWatermark: true, // Always include "Built by www.urduai.org" watermark
   includeRawData: false,
   selectedMetrics: ['followers', 'engagement', 'reach', 'impressions'], // Default selected metrics
 };
