@@ -19,6 +19,8 @@ const defaultBrandSettings: BrandSettings = {
   handle: "@creator",
   bio: "Content Creator",
   logo: "",
+  backgroundImage: null,
+  backgroundOpacity: 30,
   primaryColor: "#3B82F6",
   secondaryColor: "#10B981",
   accentColor: "#F59E0B",

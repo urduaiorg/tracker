@@ -44,6 +44,28 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
     updateExportOptions({ [option]: checked });
   };
   
+  const handleMetricToggle = (metric: MetricType) => {
+    const currentMetrics = [...exportOptions.selectedMetrics];
+    
+    if (currentMetrics.includes(metric)) {
+      // If at least one metric remains selected, allow deselection
+      if (currentMetrics.length > 1) {
+        const newMetrics = currentMetrics.filter(m => m !== metric);
+        updateExportOptions({ selectedMetrics: newMetrics });
+      } else {
+        // Don't allow deselecting the last metric
+        toast({
+          title: "At least one metric required",
+          description: "You must select at least one metric to include in your export",
+          variant: "destructive",
+        });
+      }
+    } else {
+      // Add the metric
+      updateExportOptions({ selectedMetrics: [...currentMetrics, metric] });
+    }
+  };
+  
   const handleExport = async () => {
     try {
       setIsExporting(true);
@@ -285,6 +307,140 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                     <p className="text-xs text-gray-500 mt-1">Include complete data tables for reference</p>
                   </Label>
                 </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Metrics Selection Section */}
+          <div className="mt-8 pt-6 border-t border-gray-100">
+            <h4 className="font-medium mb-4">Select Metrics to Include</h4>
+            <p className="text-sm text-gray-500 mb-4">Choose which metrics to display in your media kit</p>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              <div 
+                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions.selectedMetrics.includes('followers') 
+                  ? 'border-primary bg-primary/5' 
+                  : 'border-gray-200 hover:border-gray-300'}`}
+                onClick={() => handleMetricToggle('followers')}
+              >
+                <div className="flex items-center gap-2">
+                  <Users className={`h-5 w-5 ${exportOptions.selectedMetrics.includes('followers') ? 'text-primary' : 'text-gray-500'}`} />
+                  <div className="text-sm font-medium">Followers</div>
+                </div>
+                {exportOptions.selectedMetrics.includes('followers') && (
+                  <div className="mt-2 bg-primary/10 rounded-md p-1 inline-flex items-center">
+                    <div className="w-3 h-3 rounded-full bg-primary mr-1.5"></div>
+                    <span className="text-xs text-primary font-medium">Selected</span>
+                  </div>
+                )}
+              </div>
+              
+              <div 
+                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions.selectedMetrics.includes('engagement') 
+                  ? 'border-primary bg-primary/5' 
+                  : 'border-gray-200 hover:border-gray-300'}`}
+                onClick={() => handleMetricToggle('engagement')}
+              >
+                <div className="flex items-center gap-2">
+                  <Zap className={`h-5 w-5 ${exportOptions.selectedMetrics.includes('engagement') ? 'text-primary' : 'text-gray-500'}`} />
+                  <div className="text-sm font-medium">Engagement</div>
+                </div>
+                {exportOptions.selectedMetrics.includes('engagement') && (
+                  <div className="mt-2 bg-primary/10 rounded-md p-1 inline-flex items-center">
+                    <div className="w-3 h-3 rounded-full bg-primary mr-1.5"></div>
+                    <span className="text-xs text-primary font-medium">Selected</span>
+                  </div>
+                )}
+              </div>
+              
+              <div 
+                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions.selectedMetrics.includes('reach') 
+                  ? 'border-primary bg-primary/5' 
+                  : 'border-gray-200 hover:border-gray-300'}`}
+                onClick={() => handleMetricToggle('reach')}
+              >
+                <div className="flex items-center gap-2">
+                  <Globe className={`h-5 w-5 ${exportOptions.selectedMetrics.includes('reach') ? 'text-primary' : 'text-gray-500'}`} />
+                  <div className="text-sm font-medium">Reach</div>
+                </div>
+                {exportOptions.selectedMetrics.includes('reach') && (
+                  <div className="mt-2 bg-primary/10 rounded-md p-1 inline-flex items-center">
+                    <div className="w-3 h-3 rounded-full bg-primary mr-1.5"></div>
+                    <span className="text-xs text-primary font-medium">Selected</span>
+                  </div>
+                )}
+              </div>
+              
+              <div 
+                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions.selectedMetrics.includes('impressions') 
+                  ? 'border-primary bg-primary/5' 
+                  : 'border-gray-200 hover:border-gray-300'}`}
+                onClick={() => handleMetricToggle('impressions')}
+              >
+                <div className="flex items-center gap-2">
+                  <BarChart className={`h-5 w-5 ${exportOptions.selectedMetrics.includes('impressions') ? 'text-primary' : 'text-gray-500'}`} />
+                  <div className="text-sm font-medium">Impressions</div>
+                </div>
+                {exportOptions.selectedMetrics.includes('impressions') && (
+                  <div className="mt-2 bg-primary/10 rounded-md p-1 inline-flex items-center">
+                    <div className="w-3 h-3 rounded-full bg-primary mr-1.5"></div>
+                    <span className="text-xs text-primary font-medium">Selected</span>
+                  </div>
+                )}
+              </div>
+              
+              <div 
+                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions.selectedMetrics.includes('views') 
+                  ? 'border-primary bg-primary/5' 
+                  : 'border-gray-200 hover:border-gray-300'}`}
+                onClick={() => handleMetricToggle('views')}
+              >
+                <div className="flex items-center gap-2">
+                  <LineChart className={`h-5 w-5 ${exportOptions.selectedMetrics.includes('views') ? 'text-primary' : 'text-gray-500'}`} />
+                  <div className="text-sm font-medium">Views</div>
+                </div>
+                {exportOptions.selectedMetrics.includes('views') && (
+                  <div className="mt-2 bg-primary/10 rounded-md p-1 inline-flex items-center">
+                    <div className="w-3 h-3 rounded-full bg-primary mr-1.5"></div>
+                    <span className="text-xs text-primary font-medium">Selected</span>
+                  </div>
+                )}
+              </div>
+              
+              <div 
+                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions.selectedMetrics.includes('demographics') 
+                  ? 'border-primary bg-primary/5' 
+                  : 'border-gray-200 hover:border-gray-300'}`}
+                onClick={() => handleMetricToggle('demographics')}
+              >
+                <div className="flex items-center gap-2">
+                  <PieChart className={`h-5 w-5 ${exportOptions.selectedMetrics.includes('demographics') ? 'text-primary' : 'text-gray-500'}`} />
+                  <div className="text-sm font-medium">Demographics</div>
+                </div>
+                {exportOptions.selectedMetrics.includes('demographics') && (
+                  <div className="mt-2 bg-primary/10 rounded-md p-1 inline-flex items-center">
+                    <div className="w-3 h-3 rounded-full bg-primary mr-1.5"></div>
+                    <span className="text-xs text-primary font-medium">Selected</span>
+                  </div>
+                )}
+              </div>
+              
+              <div 
+                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions.selectedMetrics.includes('growth') 
+                  ? 'border-primary bg-primary/5' 
+                  : 'border-gray-200 hover:border-gray-300'}`}
+                onClick={() => handleMetricToggle('growth')}
+              >
+                <div className="flex items-center gap-2">
+                  <TrendingUp className={`h-5 w-5 ${exportOptions.selectedMetrics.includes('growth') ? 'text-primary' : 'text-gray-500'}`} />
+                  <div className="text-sm font-medium">Growth Rate</div>
+                </div>
+                {exportOptions.selectedMetrics.includes('growth') && (
+                  <div className="mt-2 bg-primary/10 rounded-md p-1 inline-flex items-center">
+                    <div className="w-3 h-3 rounded-full bg-primary mr-1.5"></div>
+                    <span className="text-xs text-primary font-medium">Selected</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -7,7 +7,8 @@ import {
   FileType,
   ExportFormat,
   TemplateStyle,
-  ExportOptions
+  ExportOptions,
+  MetricType
 } from "@shared/schema";
 
 // Re-export types from schema
@@ -20,7 +21,8 @@ export type {
   FileType,
   ExportFormat,
   TemplateStyle,
-  ExportOptions
+  ExportOptions,
+  MetricType
 };
 
 // Additional frontend-specific types
