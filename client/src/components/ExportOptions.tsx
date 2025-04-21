@@ -31,22 +31,22 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
   const { toast } = useToast();
   const { brandSettings, exportOptions, updateExportOptions } = useBrand();
   const [isExporting, setIsExporting] = useState(false);
-  
+
   const handleFormatChange = (value: ExportFormat) => {
     updateExportOptions({ format: value });
   };
-  
+
   const handleTemplateChange = (value: TemplateStyle) => {
     updateExportOptions({ template: value });
   };
-  
+
   const handleOptionChange = (option: string, checked: boolean) => {
     updateExportOptions({ [option]: checked });
   };
-  
+
   const handleMetricToggle = (metric: MetricType) => {
     const currentMetrics = [...exportOptions.selectedMetrics];
-    
+
     if (currentMetrics.includes(metric)) {
       // If at least one metric remains selected, allow deselection
       if (currentMetrics.length > 1) {
@@ -65,15 +65,15 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
       updateExportOptions({ selectedMetrics: [...currentMetrics, metric] });
     }
   };
-  
+
   const handleExport = async () => {
     try {
       setIsExporting(true);
       const dataUrl = await exportData("dashboard", exportOptions, brandSettings);
       const filename = generateFilename(exportOptions, brandSettings);
-      
+
       downloadDataUrl(dataUrl, filename);
-      
+
       toast({
         title: "Success!",
         description: "Your media kit has been exported successfully.",
@@ -89,7 +89,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
       setIsExporting(false);
     }
   };
-  
+
   const handlePreview = () => {
     toast({
       title: "Preview",
@@ -140,7 +140,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                     <File className="text-red-500 h-5 w-5" />
                   </Label>
                 </div>
-                
+
                 <div className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
                   <RadioGroupItem value="jpeg" id="format-jpeg" className="h-4 w-4" />
                   <Label htmlFor="format-jpeg" className="flex flex-1 items-center justify-between cursor-pointer">
@@ -148,7 +148,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                     <FileImage className="text-blue-500 h-5 w-5" />
                   </Label>
                 </div>
-                
+
                 <div className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
                   <RadioGroupItem value="html" id="format-html" className="h-4 w-4" />
                   <Label htmlFor="format-html" className="flex flex-1 items-center justify-between cursor-pointer">
@@ -158,7 +158,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                 </div>
               </RadioGroup>
             </div>
-            
+
             {/* Template Style */}
             <div className="col-span-1">
               <h4 className="font-medium mb-3">Template Style</h4>
@@ -183,7 +183,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                     <p className="text-sm font-medium mt-1 text-center">Modern</p>
                   </Label>
                 </div>
-                
+
                 <div className="space-y-1">
                   <RadioGroupItem value="minimal" id="template-minimal" className="sr-only peer" />
                   <Label 
@@ -200,7 +200,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                     <p className="text-sm font-medium mt-1 text-center">Minimal</p>
                   </Label>
                 </div>
-                
+
                 <div className="space-y-1">
                   <RadioGroupItem value="vibrant" id="template-vibrant" className="sr-only peer" />
                   <Label 
@@ -217,7 +217,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                     <p className="text-sm font-medium mt-1 text-center">Vibrant</p>
                   </Label>
                 </div>
-                
+
                 <div className="space-y-1">
                   <RadioGroupItem value="corporate" id="template-corporate" className="sr-only peer" />
                   <Label 
@@ -236,7 +236,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                 </div>
               </RadioGroup>
             </div>
-            
+
             {/* Additional Options */}
             <div className="col-span-1">
               <h4 className="font-medium mb-3">Report Card Features</h4>
@@ -256,7 +256,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                     <p className="text-xs text-gray-500 mt-1">Include scannable QR codes for all your social profiles</p>
                   </Label>
                 </div>
-                
+
                 <div className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
                   <Checkbox 
                     id="include-trends" 
@@ -272,7 +272,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                     <p className="text-xs text-gray-500 mt-1">Display growth charts for key metrics over time</p>
                   </Label>
                 </div>
-                
+
                 <div className="flex items-center space-x-3 p-3 border border-primary/30 rounded-lg bg-primary/5 hover:bg-primary/10 cursor-not-allowed transition-colors">
                   <Checkbox 
                     id="add-watermark" 
@@ -291,7 +291,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                     <p className="text-xs text-gray-500 mt-1">All exports include "Built by www.urduai.org" watermark</p>
                   </Label>
                 </div>
-                
+
                 <div className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
                   <Checkbox 
                     id="include-raw" 
@@ -310,132 +310,132 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
               </div>
             </div>
           </div>
-          
+
           {/* Metrics Selection Section */}
           <div className="mt-8 pt-6 border-t border-gray-100">
             <h4 className="font-medium mb-4">Select Metrics to Include</h4>
             <p className="text-sm text-gray-500 mb-4">Choose which metrics to display in your media kit</p>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
               <div 
-                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions.selectedMetrics.includes('followers') 
+                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions?.selectedMetrics?.includes('followers') 
                   ? 'border-primary bg-primary/5' 
                   : 'border-gray-200 hover:border-gray-300'}`}
                 onClick={() => handleMetricToggle('followers')}
               >
                 <div className="flex items-center gap-2">
-                  <Users className={`h-5 w-5 ${exportOptions.selectedMetrics.includes('followers') ? 'text-primary' : 'text-gray-500'}`} />
+                  <Users className={`h-5 w-5 ${exportOptions?.selectedMetrics?.includes('followers') ? 'text-primary' : 'text-gray-500'}`} />
                   <div className="text-sm font-medium">Followers</div>
                 </div>
-                {exportOptions.selectedMetrics.includes('followers') && (
+                {exportOptions?.selectedMetrics?.includes('followers') && (
                   <div className="mt-2 bg-primary/10 rounded-md p-1 inline-flex items-center">
                     <div className="w-3 h-3 rounded-full bg-primary mr-1.5"></div>
                     <span className="text-xs text-primary font-medium">Selected</span>
                   </div>
                 )}
               </div>
-              
+
               <div 
-                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions.selectedMetrics.includes('engagement') 
+                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions?.selectedMetrics?.includes('engagement') 
                   ? 'border-primary bg-primary/5' 
                   : 'border-gray-200 hover:border-gray-300'}`}
                 onClick={() => handleMetricToggle('engagement')}
               >
                 <div className="flex items-center gap-2">
-                  <Zap className={`h-5 w-5 ${exportOptions.selectedMetrics.includes('engagement') ? 'text-primary' : 'text-gray-500'}`} />
+                  <Zap className={`h-5 w-5 ${exportOptions?.selectedMetrics?.includes('engagement') ? 'text-primary' : 'text-gray-500'}`} />
                   <div className="text-sm font-medium">Engagement</div>
                 </div>
-                {exportOptions.selectedMetrics.includes('engagement') && (
+                {exportOptions?.selectedMetrics?.includes('engagement') && (
                   <div className="mt-2 bg-primary/10 rounded-md p-1 inline-flex items-center">
                     <div className="w-3 h-3 rounded-full bg-primary mr-1.5"></div>
                     <span className="text-xs text-primary font-medium">Selected</span>
                   </div>
                 )}
               </div>
-              
+
               <div 
-                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions.selectedMetrics.includes('reach') 
+                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions?.selectedMetrics?.includes('reach') 
                   ? 'border-primary bg-primary/5' 
                   : 'border-gray-200 hover:border-gray-300'}`}
                 onClick={() => handleMetricToggle('reach')}
               >
                 <div className="flex items-center gap-2">
-                  <Globe className={`h-5 w-5 ${exportOptions.selectedMetrics.includes('reach') ? 'text-primary' : 'text-gray-500'}`} />
+                  <Globe className={`h-5 w-5 ${exportOptions?.selectedMetrics?.includes('reach') ? 'text-primary' : 'text-gray-500'}`} />
                   <div className="text-sm font-medium">Reach</div>
                 </div>
-                {exportOptions.selectedMetrics.includes('reach') && (
+                {exportOptions?.selectedMetrics?.includes('reach') && (
                   <div className="mt-2 bg-primary/10 rounded-md p-1 inline-flex items-center">
                     <div className="w-3 h-3 rounded-full bg-primary mr-1.5"></div>
                     <span className="text-xs text-primary font-medium">Selected</span>
                   </div>
                 )}
               </div>
-              
+
               <div 
-                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions.selectedMetrics.includes('impressions') 
+                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions?.selectedMetrics?.includes('impressions') 
                   ? 'border-primary bg-primary/5' 
                   : 'border-gray-200 hover:border-gray-300'}`}
                 onClick={() => handleMetricToggle('impressions')}
               >
                 <div className="flex items-center gap-2">
-                  <BarChart className={`h-5 w-5 ${exportOptions.selectedMetrics.includes('impressions') ? 'text-primary' : 'text-gray-500'}`} />
+                  <BarChart className={`h-5 w-5 ${exportOptions?.selectedMetrics?.includes('impressions') ? 'text-primary' : 'text-gray-500'}`} />
                   <div className="text-sm font-medium">Impressions</div>
                 </div>
-                {exportOptions.selectedMetrics.includes('impressions') && (
+                {exportOptions?.selectedMetrics?.includes('impressions') && (
                   <div className="mt-2 bg-primary/10 rounded-md p-1 inline-flex items-center">
                     <div className="w-3 h-3 rounded-full bg-primary mr-1.5"></div>
                     <span className="text-xs text-primary font-medium">Selected</span>
                   </div>
                 )}
               </div>
-              
+
               <div 
-                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions.selectedMetrics.includes('views') 
+                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions?.selectedMetrics?.includes('views') 
                   ? 'border-primary bg-primary/5' 
                   : 'border-gray-200 hover:border-gray-300'}`}
                 onClick={() => handleMetricToggle('views')}
               >
                 <div className="flex items-center gap-2">
-                  <LineChart className={`h-5 w-5 ${exportOptions.selectedMetrics.includes('views') ? 'text-primary' : 'text-gray-500'}`} />
+                  <LineChart className={`h-5 w-5 ${exportOptions?.selectedMetrics?.includes('views') ? 'text-primary' : 'text-gray-500'}`} />
                   <div className="text-sm font-medium">Views</div>
                 </div>
-                {exportOptions.selectedMetrics.includes('views') && (
+                {exportOptions?.selectedMetrics?.includes('views') && (
                   <div className="mt-2 bg-primary/10 rounded-md p-1 inline-flex items-center">
                     <div className="w-3 h-3 rounded-full bg-primary mr-1.5"></div>
                     <span className="text-xs text-primary font-medium">Selected</span>
                   </div>
                 )}
               </div>
-              
+
               <div 
-                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions.selectedMetrics.includes('demographics') 
+                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions?.selectedMetrics?.includes('demographics') 
                   ? 'border-primary bg-primary/5' 
                   : 'border-gray-200 hover:border-gray-300'}`}
                 onClick={() => handleMetricToggle('demographics')}
               >
                 <div className="flex items-center gap-2">
-                  <PieChart className={`h-5 w-5 ${exportOptions.selectedMetrics.includes('demographics') ? 'text-primary' : 'text-gray-500'}`} />
+                  <PieChart className={`h-5 w-5 ${exportOptions?.selectedMetrics?.includes('demographics') ? 'text-primary' : 'text-gray-500'}`} />
                   <div className="text-sm font-medium">Demographics</div>
                 </div>
-                {exportOptions.selectedMetrics.includes('demographics') && (
+                {exportOptions?.selectedMetrics?.includes('demographics') && (
                   <div className="mt-2 bg-primary/10 rounded-md p-1 inline-flex items-center">
                     <div className="w-3 h-3 rounded-full bg-primary mr-1.5"></div>
                     <span className="text-xs text-primary font-medium">Selected</span>
                   </div>
                 )}
               </div>
-              
+
               <div 
-                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions.selectedMetrics.includes('growth') 
+                className={`rounded-lg border p-3 cursor-pointer transition-all ${exportOptions?.selectedMetrics?.includes('growth') 
                   ? 'border-primary bg-primary/5' 
                   : 'border-gray-200 hover:border-gray-300'}`}
                 onClick={() => handleMetricToggle('growth')}
               >
                 <div className="flex items-center gap-2">
-                  <TrendingUp className={`h-5 w-5 ${exportOptions.selectedMetrics.includes('growth') ? 'text-primary' : 'text-gray-500'}`} />
+                  <TrendingUp className={`h-5 w-5 ${exportOptions?.selectedMetrics?.includes('growth') ? 'text-primary' : 'text-gray-500'}`} />
                   <div className="text-sm font-medium">Growth Rate</div>
                 </div>
-                {exportOptions.selectedMetrics.includes('growth') && (
+                {exportOptions?.selectedMetrics?.includes('growth') && (
                   <div className="mt-2 bg-primary/10 rounded-md p-1 inline-flex items-center">
                     <div className="w-3 h-3 rounded-full bg-primary mr-1.5"></div>
                     <span className="text-xs text-primary font-medium">Selected</span>
@@ -444,14 +444,14 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
               </div>
             </div>
           </div>
-          
+
           <div className="mt-8 pt-6 border-t border-gray-100">
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
               <div className="w-full lg:w-auto">
                 <div className="flex flex-col">
                   <h4 className="font-medium mb-2">Preview & Download</h4>
                   <p className="text-sm text-gray-500 mb-3">Generate your professional media kit with your brand settings</p>
-                  
+
                   <div className="relative group">
                     <div className="bg-gray-100 rounded-xl w-full lg:w-48 h-32 flex items-center justify-center text-gray-400 overflow-hidden">
                       {exportOptions.template === "modern" && (
@@ -463,7 +463,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                       {exportOptions.template === "corporate" && (
                         <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-600/30 z-0"></div>
                       )}
-                      
+
                       <div className="relative z-10 flex flex-col items-center">
                         <FileImage className="h-10 w-10 mb-2" />
                         <div className="text-xs text-center">
@@ -472,14 +472,14 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="absolute bottom-2 right-2 opacity-70">
                       <BadgeCheck className="h-5 w-5 text-primary" />
                     </div>
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex flex-col gap-3 w-full lg:w-auto">
                 <div className="text-sm p-3 bg-blue-50 text-blue-800 rounded-lg max-w-md">
                   <div className="flex items-start">
@@ -487,7 +487,7 @@ export const ExportOptions: React.FC<ExportOptionsProps> = ({ className }) => {
                     <p>Your media kit will be exported with <span className="font-medium">www.urduai.org</span> branding. No data is stored - once refreshed/closed, all data is gone.</p>
                   </div>
                 </div>
-                
+
                 <div className="flex flex-col sm:flex-row gap-3 mt-1">
                   <Button 
                     variant="outline" 
