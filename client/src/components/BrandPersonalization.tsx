@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback } from "react";
 import { useBrand } from "@/contexts/BrandContext";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Edit, User, Camera, Trash2, Upload } from "lucide-react";
+import { Edit, User, Camera, Trash2, Upload, Image as ImageIcon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { BrandSettings } from "@/types";
 import { fileToBase64 } from "@/lib/fileUtils";
 import { useToast } from "@/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface BrandPersonalizationProps {
   className?: string;
@@ -20,17 +21,18 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Partial<BrandSettings>>(brandSettings || {});
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
+  const bgImageInputRef = useRef<HTMLInputElement>(null);
 
-  const handleLogoUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>, imageType: 'logo' | 'backgroundImage') => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Check file size (limit to 1MB)
-    if (file.size > 1024 * 1024) {
+    // Check file size (limit to 2MB)
+    if (file.size > 2 * 1024 * 1024) {
       toast({
         title: "File too large",
-        description: "Please select an image under 1MB",
+        description: `Please select an image under 2MB`,
         variant: "destructive",
       });
       return;
@@ -41,21 +43,31 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
       const base64 = await fileToBase64(file);
       setFormData((prev) => ({
         ...prev,
-        logo: base64,
+        [imageType]: base64,
       }));
       toast({
-        title: "Logo uploaded",
-        description: "Your logo has been uploaded successfully",
+        title: imageType === 'logo' ? "Logo uploaded" : "Background image uploaded",
+        description: imageType === 'logo' 
+          ? "Your logo has been uploaded successfully" 
+          : "Your background image has been uploaded successfully",
       });
     } catch (error) {
-      console.error("Error uploading logo:", error);
+      console.error(`Error uploading ${imageType}:`, error);
       toast({
         title: "Error",
-        description: "Failed to upload logo. Please try again.",
+        description: `Failed to upload ${imageType === 'logo' ? 'logo' : 'background image'}. Please try again.`,
         variant: "destructive",
       });
     }
   }, [toast]);
+  
+  const handleLogoUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    handleImageUpload(event, 'logo');
+  }, [handleImageUpload]);
+  
+  const handleBackgroundUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    handleImageUpload(event, 'backgroundImage');
+  }, [handleImageUpload]);
 
   if (!brandSettings) return null;
 
@@ -95,9 +107,20 @@ export const BrandPersonalization: React.FC<BrandPersonalizationProps> = ({ clas
       logo: "",
     });
   };
+  
+  const removeBackgroundImage = () => {
+    setFormData({
+      ...formData,
+      backgroundImage: "",
+    });
+  };
 
-  const triggerFileUpload = () => {
-    fileInputRef.current?.click();
+  const triggerLogoUpload = () => {
+    logoInputRef.current?.click();
+  };
+  
+  const triggerBgImageUpload = () => {
+    bgImageInputRef.current?.click();
   };
 
   return (

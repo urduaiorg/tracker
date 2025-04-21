@@ -43,6 +43,7 @@ export const brandSettings = pgTable("brand_settings", {
   handle: text("handle"),
   bio: text("bio"),
   logo: text("logo"), // URL/Base64
+  backgroundImage: text("background_image"), // URL/Base64
   primaryColor: text("primary_color"),
   secondaryColor: text("secondary_color"),
   accentColor: text("accent_color"),
