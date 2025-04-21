@@ -116,9 +116,6 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
           <Button className="bg-primary text-white rounded-lg font-medium hover:bg-blue-600 inline-flex items-center gap-2">
             <FileIcon className="w-4 h-4" /> Select Files
           </Button>
-          <p className="text-xs text-gray-500 mt-3">
-            or forward analytics emails to import@socialkit.app
-          </p>
         </div>
       </div>
 
