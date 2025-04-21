@@ -35,7 +35,7 @@ export const UploadZone: React.FC<UploadZoneProps> = ({ className }) => {
   //     });
   //   }
   // );
-  
+
   // Simulation variables instead of worker
   const progress = 0;
   const isOcrProcessing = false;
