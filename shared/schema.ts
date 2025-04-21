@@ -91,6 +91,8 @@ export type ProcessingFile = {
 export type ExportFormat = "pdf" | "jpeg" | "html";
 export type TemplateStyle = "modern" | "minimal" | "vibrant" | "corporate";
 
+export type MetricType = 'followers' | 'engagement' | 'reach' | 'impressions' | 'views' | 'demographics' | 'growth';
+
 export type ExportOptions = {
   format: ExportFormat;
   template: TemplateStyle;
@@ -98,4 +100,5 @@ export type ExportOptions = {
   includeGrowthTrends: boolean;
   addWatermark: boolean;
   includeRawData: boolean;
+  selectedMetrics: MetricType[];
 };

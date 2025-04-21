@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { BrandSettings, ExportOptions, TemplateStyle, ExportFormat } from "@/types";
+import { BrandSettings, ExportOptions, TemplateStyle, ExportFormat, MetricType } from "@/types";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 
 interface BrandContextType {
@@ -31,8 +31,9 @@ const defaultExportOptions: ExportOptions = {
   template: "modern",
   includeQrCodes: true,
   includeGrowthTrends: true,
-  addWatermark: false,
+  addWatermark: true, // Always include "Made with Urdu AI Tracker" watermark
   includeRawData: false,
+  selectedMetrics: ['followers', 'engagement', 'reach', 'impressions'], // Default selected metrics
 };
 
 const BrandContext = createContext<BrandContextType | undefined>(undefined);
