@@ -24,6 +24,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
             <div>
               <h1 className="text-2xl md:text-3xl font-heading font-bold">Urdu AI Tracker</h1>
               <p className="text-gray-600 mt-1">Transform your analytics into stunning modern report cards</p>
+              <div className="text-xs text-amber-600 mt-1">Note: No data is stored once the page is refreshed/closed</div>
             </div>
             
             <div className="flex items-center gap-3">
